@@ -13,7 +13,4 @@ export const userPool = new createPool({
   user: DB_USER,
   password: DB_PASSWORD_USER,
   database: DATABASE_USER,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
 });
