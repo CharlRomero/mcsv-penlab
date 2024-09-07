@@ -1,4 +1,4 @@
-import { pool } from "../config/database.config.js";
+import { userPool } from "../config/database.config.js";
 
 /**
  * Crea un nuevo usuario en la base de datos utilizando el procedimiento almacenado `CreateUser`.
@@ -18,7 +18,7 @@ import { pool } from "../config/database.config.js";
  */
 export const create = async (data) => {
   // Ejecuta el procedimiento almacenado `CreateUser` con los datos del nuevo usuario
-  const [rows] = await pool.execute("CALL CreateUser(?, ?, ?, ?)", [
+  const [rows] = await userPool.execute("CALL CreateUser(?, ?, ?, ?)", [
     data.username,
     data.email,
     data.password,
@@ -40,7 +40,7 @@ export const create = async (data) => {
  */
 export const updatePassword = async (userId, newPassword, newSalt) => {
     try {
-      const [result] = await pool.execute("CALL UpdateUserPassword(?, ?, ?)", [
+      const [result] = await userPool.execute("CALL UpdateUserPassword(?, ?, ?)", [
         userId,
         newPassword,
         newSalt
