@@ -1,0 +1,4 @@
+2024-09-14 11:14:38 [INFO]: Nuevo usuario registrado exitosamente con el correo: user8@user.com.
+2024-09-14 11:15:06 [WARN]: Intento de registro fallido: faltan campos obligatorios.
+2024-09-14 11:15:16 [WARN]: Intento de registro fallido: faltan campos obligatorios.
+2024-09-14 11:15:22 [INFO]: Nuevo usuario registrado exitosamente con el correo: user9@user.com.
