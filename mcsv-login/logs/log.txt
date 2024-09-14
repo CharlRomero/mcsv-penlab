@@ -1,0 +1,3 @@
+2024-09-14 10:48:39 [INFO]: Usuario user1 inició sesión exitosamente. Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoidXNlcjEiLCJpYXQiOjE3MjYzMjg5MTksImV4cCI6MTcyNjMzMjUxOX0.lU0m38rp-cg32q2orwk0ysupTJu6qjJW4RG5ap3NjyM
+2024-09-14 10:51:06 [INFO]: Usuario user5 inició sesión exitosamente. Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInVzZXJuYW1lIjoidXNlcjUiLCJpYXQiOjE3MjYzMjkwNjYsImV4cCI6MTcyNjMzMjY2Nn0.CAu82gNMX1UBn_lSJizx_BgTWd6xaq5MFOHiP41qIJ0
+2024-09-14 10:52:36 [WARN]: Intento de inicio de sesión fallido para usuario: user6

@@ -1,8 +1,8 @@
-// user.controller.js
 import { verifyUserPassword } from "../service/user.service.js";
 import jwt from "jsonwebtoken"; // Para generar el token
 import { saveToken } from "../model/token.model.js"; // Para guardar el token
 import { getUserIdByUsername } from "../model/user.model.js"; // Asegúrate de importar correctamente la función
+import logger from "../utils/logger.js"; // Importa el logger
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -22,18 +22,23 @@ export const loginController = async (req, res) => {
 
     if (isValid) {
       // Crear el token
-      const userId = await getUserIdByUsername(username); // Ya importado correctamente desde user.model.js
+      const userId = await getUserIdByUsername(username);
       const token = jwt.sign({ userId, username }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION_TIME });
       
       // Guardar el token en la base de datos
       const expirationDate = new Date(Date.now() + 3600000); // Expira en 1 hora
       await saveToken(userId, token, expirationDate);
 
+      // Registrar la actividad en el log
+      logger.info(`Usuario ${username} inició sesión exitosamente. Token: ${token}`);
+
       res.status(200).json({ message: "Login successful", token });
     } else {
+      logger.warn(`Intento de inicio de sesión fallido para usuario: ${username}`);
       res.status(401).json({ message: "Invalid username or password" });
     }
   } catch (error) {
+    logger.error(`Error en el inicio de sesión para usuario ${username}: ${error.message}`);
     res.status(500).json({ message: error.message });
   }
 };
