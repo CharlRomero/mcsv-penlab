@@ -5,3 +5,6 @@
 /mcsv-login/node_modules
 /mcsv-login/.env
 /mcsv-login/logs
+
+/mcsv-vpn/node_modules
+/mcsv-vpn/.env
