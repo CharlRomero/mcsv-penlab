@@ -8,3 +8,6 @@
 
 /mcsv-vpn/node_modules
 /mcsv-vpn/.env
+
+/mcsv-certificate/node_modules
+/mcsv-certificate/.env
