@@ -23,22 +23,30 @@ export const loginController = async (req, res) => {
     if (isValid) {
       // Crear el token
       const userId = await getUserIdByUsername(username);
-      const token = jwt.sign({ userId, username }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION_TIME });
-      
+      const token = jwt.sign({ userId, username }, JWT_SECRET, {
+        expiresIn: TOKEN_EXPIRATION_TIME,
+      });
+
       // Guardar el token en la base de datos
       const expirationDate = new Date(Date.now() + 3600000); // Expira en 1 hora
       await saveToken(userId, token, expirationDate);
 
       // Registrar la actividad en el log
-      logger.info(`Usuario ${username} inició sesión exitosamente. Token: ${token}`);
+      logger.info(
+        `Usuario ${username} inició sesión exitosamente. Token: ${token}`
+      );
 
-      res.status(200).json({ message: "Login successful", token });
+      res.status(200).json({ message: "Login successful", token, username });
     } else {
-      logger.warn(`Intento de inicio de sesión fallido para usuario: ${username}`);
+      logger.warn(
+        `Intento de inicio de sesión fallido para usuario: ${username}`
+      );
       res.status(401).json({ message: "Invalid username or password" });
     }
   } catch (error) {
-    logger.error(`Error en el inicio de sesión para usuario ${username}: ${error.message}`);
+    logger.error(
+      `Error en el inicio de sesión para usuario ${username}: ${error.message}`
+    );
     res.status(500).json({ message: error.message });
   }
 };
