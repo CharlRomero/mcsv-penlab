@@ -11,3 +11,7 @@
 
 /mcsv-certificate/node_modules
 /mcsv-certificate/.env
+/mcsv-certificate/public/certificates
+
+
+

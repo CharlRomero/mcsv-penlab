@@ -33,6 +33,7 @@ export const createVpnService = (username, password) => {
         });
 
         stream.on('close', (code) => {
+          console.log(code)
           conn.end();
           if (code !== 0 || errorOutput) {
             return reject(new Error(`Error en el script: ${errorOutput || 'Código de error: ' + code}`));
