@@ -7,7 +7,10 @@ export const createVpn = async (req, res) => {
     const { username, password } = req.body;
     
     // Log para verificar la entrada
-    console.log(`Username: ${username}, Password: ${password}`);
+    console.log(`Username: ${username}, Password: ${password}, token: ${req.cookies.token}`);
+    //    console.log(`Username: ${username}, Password: ${password}, token: ${req.cookies.token}`);
+
+
 
     // Validar entrada
     // validateUserInput(username, password);
