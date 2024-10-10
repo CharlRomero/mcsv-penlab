@@ -36,7 +36,11 @@ export const loginController = async (req, res) => {
         `Usuario ${username} inició sesión exitosamente. Token: ${token}`
       );
 
-      res.status(200).json({ message: "Login successful", token, username });
+      res.status(200).json({ message: "Login successful", username });
+      res.cookie("token", token, {
+        httpOnly: true, // Para que el token no sea accesible desde JS
+        sameSite: "Strict", // Solo permite que la cookie sea enviada desde el mismo dominio
+      });
     } else {
       logger.warn(
         `Intento de inicio de sesión fallido para usuario: ${username}`
