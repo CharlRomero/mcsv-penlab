@@ -1,7 +1,8 @@
 import { Client } from 'ssh2';
 import { COMMAND } from '../config/env.config.js';
+
 export const createVpnService = (username, password) => {
-  const REMOTE_HOST = '192.168.0.102';  // IP o hostname de la máquina remota
+  const REMOTE_HOST = '192.168.10.238';  // IP o hostname de la máquina remota
   const REMOTE_USER = 'penlab'; // Usuario SSH en la máquina remota
   const REMOTE_SCRIPT = COMMAND;  // Ruta del script en la máquina remota
   
@@ -9,15 +10,13 @@ export const createVpnService = (username, password) => {
     const conn = new Client();
 
     // Comando que se ejecutará en la máquina remota
-    const command = `bash ${REMOTE_SCRIPT} ${username} ${password}`;
-    
-    // Conectar por SSH
+    const command = `echo "penlab" | sudo -S bash ${REMOTE_SCRIPT} ${username} ${password}`;
 
+    // Conectar por SSH
     console.log(`Ejecutando el comando: ${command}`);
 
     conn.on('ready', () => {
-        console.log(`Ejecutando el comando: ${command}`);
-      conn.exec(command, (err, stream) => {
+      conn.exec(command, { pty: true }, (err, stream) => {
         if (err) {
           return reject(new Error(`Error al ejecutar el comando: ${err.message}`));
         }
@@ -25,7 +24,7 @@ export const createVpnService = (username, password) => {
         let output = '';
         let errorOutput = '';
 
-        // Recoger la salida del script
+        // Capturar salida estándar
         stream.on('data', (data) => {
           output += data;
         }).stderr.on('data', (data) => {
@@ -33,12 +32,18 @@ export const createVpnService = (username, password) => {
         });
 
         stream.on('close', (code) => {
-          console.log(code)
           conn.end();
           if (code !== 0 || errorOutput) {
             return reject(new Error(`Error en el script: ${errorOutput || 'Código de error: ' + code}`));
           }
-          resolve(output);
+
+          // Filtrar la salida para eliminar mensajes no deseados
+          const cleanedOutput = output
+            .replace(/\[sudo\] password for penlab:\s*/g, '') // Eliminar el mensaje de sudo
+            .replace(/Pseudo-terminal will not be allocated because stdin is not a terminal.\s*/g, '') // Eliminar la advertencia de pseudo-terminal
+            .trim(); // Eliminar espacios en blanco al principio y al final
+
+          resolve(cleanedOutput || "Comando ejecutado sin salida adicional.");
         });
       });
     }).connect({
@@ -49,28 +54,3 @@ export const createVpnService = (username, password) => {
     });
   });
 };
-
-
-
-
-// vpnService.js
-/*import { exec } from "child_process";
-import { COMMAND } from '../config/env.config.js';
-
-
-export const createVpnService = (username, password) => { // Ajusta la ruta del script
-
-  return new Promise((resolve, reject) => {
-    const command = `bash ${COMMAND} ${username} ${password}`;
-    
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        return reject(new Error(`Error al ejecutar el script: ${error.message}`));
-      }
-      if (stderr) {
-        return reject(new Error(`Error en el script: ${stderr}`));
-      }
-      resolve("Created VPN");
-    });
-  });
-};*/
