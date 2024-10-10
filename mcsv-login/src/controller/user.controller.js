@@ -38,7 +38,6 @@ export const loginController = async (req, res) => {
 
       res.cookie("token", token, {
         httpOnly: true, // Para que el token no sea accesible desde JS
-        sameSite: "Strict", // Solo permite que la cookie sea enviada desde el mismo dominio
       });
       res.status(200).json({ message: "Login successful", username });
     } else {
