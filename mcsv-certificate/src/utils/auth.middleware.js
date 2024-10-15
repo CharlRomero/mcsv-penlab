@@ -1,43 +1,44 @@
-// auth.middleware.js
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
-import { getUserById } from '../service/user.service.js'; // Asegúrate de tener esta función implementada correctamente
+import { getUserById } from '../service/user.service.js';
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || "yourSecretKeyHere";
+//validar cuando el token es invalido
+const JWT_SECRET = process.env.JWT_SECRET || "secretKey";
 
 export const authenticateToken = async (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  console.log(token)
-
+  // Obtén el token desde las cookies
+  const token = req.cookies.token;
+  console.log('Token:', token);
+  // Si no hay token, se devuelve un error
   if (!token) {
     return res.status(401).json({ message: 'Token not provided' });
   }
 
   try {
-    // Verifica el token y extrae el userId
+    // Verifica el token con la clave secreta del MCSV-LOGIN
     const decodedToken = jwt.verify(token, JWT_SECRET);
-    console.log(decodedToken); // Para ver el contenido del token
 
-    // Buscar el usuario en la base de datos utilizando el userId del token
-    const user = await getUserById(decodedToken.userId); 
-    
+    // Busca el usuario en la base de datos utilizando el userId del token
+    const user = await getUserById(decodedToken.userId);
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Verificar si el rol_id es 2 (estudiante)
+    // Verifica si el rol_id es 2 (estudiante)
     if (user.rol_id !== 2) {
       return res.status(403).json({ message: 'Access denied: Only students can generate certificates' });
     }
 
-    req.user = user; // Adjunta el usuario al request para el siguiente middleware o controlador
+    // Adjunta el usuario al request para el siguiente middleware o controlador
+    req.user = user;
 
     next(); // Pasa al siguiente middleware o controlador si todo es correcto
   } catch (error) {
-    console.error(error); // Para ver errores adicionales
-    return res.status(403).json({ message: 'Token is not valid' });
+    // Si el token no es válido, se devuelve un error
+    console.error('Token verification error:', error);
+    return res.status(403).json({ message: 'Invalid token' });
   }
 };
