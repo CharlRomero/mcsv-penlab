@@ -1,8 +1,15 @@
 import { Client } from 'ssh2';
 import { COMMAND } from '../config/env.config.js';
+import path from 'path';
+
+
+import fs from 'fs';
+
+import { fileURLToPath } from 'url';
+
 
 export const createVpnService = (username, password) => {
-  const REMOTE_HOST = '192.168.10.238';  // IP o hostname de la máquina remota
+  const REMOTE_HOST = '192.168.10.240';  // IP o hostname de la máquina remota
   const REMOTE_USER = 'penlab'; // Usuario SSH en la máquina remota
   const REMOTE_SCRIPT = COMMAND;  // Ruta del script en la máquina remota
   
@@ -51,6 +58,55 @@ export const createVpnService = (username, password) => {
       port: 22,
       username: REMOTE_USER,
       password: "penlab"  // Autenticación usando contraseña
+    });
+  });
+};
+
+// Simular __dirname en ES6
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export const downloadVpnService = (username, res) => {
+  const REMOTE_HOST = '192.168.10.240';
+  const REMOTE_USER = 'penlab';
+  const REMOTE_PATH = `/etc/openvpn/client/files/${username}.zip`; // Ruta del archivo en el servidor remoto
+
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+
+    conn.on('ready', () => {
+      // Usar sudo para acceder al archivo como root
+      const command = `echo "penlab" | sudo -S cat ${REMOTE_PATH}`;  // Usamos cat para leer el archivo remoto
+
+      conn.exec(command, (err, stream) => {
+        if (err) {
+          return reject(new Error(`Error al ejecutar el comando: ${err.message}`));
+        }
+
+        // Enviar archivo como respuesta HTTP
+        res.setHeader('Content-Disposition', `attachment; filename=${username}.zip`);
+        res.setHeader('Content-Type', 'application/zip');
+
+        // Enviar el archivo directamente al navegador del cliente
+        stream.pipe(res);
+
+        stream.on('close', (code) => {
+          conn.end();
+          if (code !== 0) {
+            return reject(new Error(`Error en el script, código de error: ${code}`));
+          }
+          resolve();
+        });
+
+        stream.on('error', (error) => {
+          reject(new Error(`Error al descargar el archivo: ${error.message}`));
+        });
+      });
+    }).connect({
+      host: REMOTE_HOST,
+      port: 22,
+      username: REMOTE_USER,
+      password: 'penlab'  // Autenticación usando contraseña
     });
   });
 };
