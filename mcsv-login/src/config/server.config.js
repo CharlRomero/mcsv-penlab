@@ -1,10 +1,11 @@
-import express, { Router } from "express";
+import express from "express";
 import cors from "cors";
 import loginRoutes from "../routes/index.routes.js";
+import { CLIENT_ORIGIN } from "../config/env.config.js"; // Importar la variable
 
 const app = express();
 
-app.use(cors({ origin: "http://192.168.10.101:8080", credentials: true }));
+app.use(cors({ origin: CLIENT_ORIGIN, credentials: true })); // Usar la variable
 app.use(express.json());
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));

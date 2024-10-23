@@ -12,6 +12,7 @@ const TOKEN_EXPIRATION_TIME = process.env.TOKEN_EXPIRATION_TIME || "1h"; // Tiem
 
 export const loginController = async (req, res) => {
   const { username, password } = req.body;
+  //console.log(`Username: ${username}, Password: ${password}`);
 
   if (!username || !password) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -30,7 +31,7 @@ export const loginController = async (req, res) => {
       // Guardar el token en la base de datos
       const expirationDate = new Date(Date.now() + 3600000); // Expira en 1 hora
       await saveToken(userId, token, expirationDate);
-
+      console.log( `Usuario ${username} inició sesión exitosamente.`);
       // Registrar la actividad en el log
       logger.info(
         `Usuario ${username} inició sesión exitosamente. Token: ${token}`
@@ -41,6 +42,8 @@ export const loginController = async (req, res) => {
       });
       res.status(200).json({ message: "Login successful", username });
     } else {
+
+      console.log(`Intento de inicio de sesión fallido para usuario: ${username}`);
       logger.warn(
         `Intento de inicio de sesión fallido para usuario: ${username}`
       );
