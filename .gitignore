@@ -1,9 +1,11 @@
 /mcsv-register/node_modules
 /mcsv-register/.env
 /mcsv-register/logs/register_log.txt
+/mcsv-register/logs
 
 /mcsv-login/node_modules
 /mcsv-login/.env
+/mcsv-login/logs/log.txt
 /mcsv-login/logs
 
 /mcsv-vpn/node_modules
