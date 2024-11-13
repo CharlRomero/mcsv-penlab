@@ -4,3 +4,14 @@
 2024-09-14 11:15:22 [INFO]: Nuevo usuario registrado exitosamente con el correo: user9@user.com.
 2024-10-08 11:13:28 [INFO]: Nuevo usuario registrado exitosamente con el correo: user9@user.com.
 2024-10-08 11:15:53 [INFO]: Nuevo usuario registrado exitosamente con el correo: user20@user.com.
+2024-10-16 12:59:51 [INFO]: Nuevo usuario registrado exitosamente con el correo: l@l.l.
+2024-10-16 13:24:27 [INFO]: Nuevo usuario registrado exitosamente con el correo: i@i.i.
+2024-10-17 12:05:23 [INFO]: Nuevo usuario registrado exitosamente con el correo: nuevoregister@user.com.
+2024-10-17 12:14:31 [INFO]: Nuevo usuario registrado exitosamente con el correo: nuevoregister2@user.com.
+2024-10-17 12:24:51 [INFO]: Nuevo usuario registrado exitosamente con el correo: k@k.k.
+2024-10-23 11:48:41 [INFO]: Nuevo usuario registrado exitosamente con el correo: y@y.y.
+2024-10-23 13:35:32 [INFO]: Nuevo usuario registrado exitosamente con el correo: federico@fede.com.
+2024-10-23 13:47:49 [INFO]: Nuevo usuario registrado exitosamente con el correo: admin@admin.com.
+2024-10-23 14:12:01 [ERROR]: Error en el registro del usuario con el correo monica@m.c: Error creating user: connect ETIMEDOUT
+2024-10-23 14:23:30 [INFO]: Nuevo usuario registrado exitosamente con el correo: luisjaramillo@espe.edu.ec.
+2024-10-23 14:34:51 [INFO]: Nuevo usuario registrado exitosamente con el correo: carlos@espe.edu.ec.

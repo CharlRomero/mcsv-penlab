@@ -21,3 +21,16 @@ export const createVpn = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+import { downloadVpnService } from '../service/vpn.service.js';
+
+export const downloadVpn = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    await downloadVpnService(username, res);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

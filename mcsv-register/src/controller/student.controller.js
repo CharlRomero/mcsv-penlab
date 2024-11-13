@@ -7,6 +7,8 @@ import logger from "../utils/logger.js"; // Importamos el logger
 export const createUserController = async (req, res) => {
   const { email, password } = req.body;
 
+  
+
   // Validación de los datos del usuario
   if (!email || !password) {
     logger.warn("Intento de registro fallido: faltan campos obligatorios.");
@@ -16,7 +18,7 @@ export const createUserController = async (req, res) => {
   try {
     // Crear el nuevo usuario usando el servicio
     const result = await createUserService({ email, password });
-
+    console.log(`Nuevo usuario registrado exitosamente con el correo: ${email}.`);
     // Log exitoso del registro
     logger.info(
       `Nuevo usuario registrado exitosamente con el correo: ${email}.`
@@ -24,6 +26,7 @@ export const createUserController = async (req, res) => {
 
     res.status(201).json({ message: "User created successfully", result });
   } catch (error) {
+    console.log(`Error en el registro del usuario con el correo ${email}: ${error.message}`);
     // Log de error si ocurre un problema
     logger.error(
       `Error en el registro del usuario con el correo ${email}: ${error.message}`

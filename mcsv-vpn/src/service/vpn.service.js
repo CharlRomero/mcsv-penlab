@@ -1,18 +1,18 @@
 import { Client } from 'ssh2';
-import { COMMAND } from '../config/env.config.js';
+import { COMMAND, SSH_PORT, SSH_PASSWORD, REMOTE_HOST, REMOTE_USER, REMOTE_PATH } from '../config/env.config.js';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 export const createVpnService = (username, password) => {
-  const REMOTE_HOST = '192.168.10.238';  // IP o hostname de la máquina remota
-  const REMOTE_USER = 'penlab'; // Usuario SSH en la máquina remota
   const REMOTE_SCRIPT = COMMAND;  // Ruta del script en la máquina remota
-  
+
   return new Promise((resolve, reject) => {
     const conn = new Client();
 
     // Comando que se ejecutará en la máquina remota
-    const command = `echo "penlab" | sudo -S bash ${REMOTE_SCRIPT} ${username} ${password}`;
+    const command = `echo "${SSH_PASSWORD}" | sudo -S bash ${REMOTE_SCRIPT} ${username} ${password}`;
 
-    // Conectar por SSH
     console.log(`Ejecutando el comando: ${command}`);
 
     conn.on('ready', () => {
@@ -24,7 +24,6 @@ export const createVpnService = (username, password) => {
         let output = '';
         let errorOutput = '';
 
-        // Capturar salida estándar
         stream.on('data', (data) => {
           output += data;
         }).stderr.on('data', (data) => {
@@ -37,20 +36,62 @@ export const createVpnService = (username, password) => {
             return reject(new Error(`Error en el script: ${errorOutput || 'Código de error: ' + code}`));
           }
 
-          // Filtrar la salida para eliminar mensajes no deseados
           const cleanedOutput = output
-            .replace(/\[sudo\] password for penlab:\s*/g, '') // Eliminar el mensaje de sudo
-            .replace(/Pseudo-terminal will not be allocated because stdin is not a terminal.\s*/g, '') // Eliminar la advertencia de pseudo-terminal
-            .trim(); // Eliminar espacios en blanco al principio y al final
+            .replace(/\[sudo\] password for penlab:\s*/g, '')
+            .replace(/Pseudo-terminal will not be allocated because stdin is not a terminal.\s*/g, '')
+            .trim();
 
           resolve(cleanedOutput || "Comando ejecutado sin salida adicional.");
         });
       });
     }).connect({
-      host: REMOTE_HOST,
-      port: 22,
-      username: REMOTE_USER,
-      password: "penlab"  // Autenticación usando contraseña
+      host: REMOTE_HOST,  // Usar la variable de entorno
+      port: SSH_PORT,
+      username: REMOTE_USER,  // Usar la variable de entorno
+      password: SSH_PASSWORD
+    });
+  });
+};
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export const downloadVpnService = (username, res) => {
+  const REMOTE_PATH_FILE = `${REMOTE_PATH}/${username}.zip`; // Usar la variable de entorno para la ruta del archivo
+
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+
+    conn.on('ready', () => {
+      const command = `echo "${SSH_PASSWORD}" | sudo -S cat ${REMOTE_PATH_FILE}`;
+
+      conn.exec(command, (err, stream) => {
+        if (err) {
+          return reject(new Error(`Error al ejecutar el comando: ${err.message}`));
+        }
+
+        res.setHeader('Content-Disposition', `attachment; filename=${username}.zip`);
+        res.setHeader('Content-Type', 'application/zip');
+
+        stream.pipe(res);
+
+        stream.on('close', (code) => {
+          conn.end();
+          if (code !== 0) {
+            return reject(new Error(`Error en el script, código de error: ${code}`));
+          }
+          resolve();
+        });
+
+        stream.on('error', (error) => {
+          reject(new Error(`Error al descargar el archivo: ${error.message}`));
+        });
+      });
+    }).connect({
+      host: REMOTE_HOST,  // Usar la variable de entorno
+      port: SSH_PORT,
+      username: REMOTE_USER,  // Usar la variable de entorno
+      password: SSH_PASSWORD
     });
   });
 };

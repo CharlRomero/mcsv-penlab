@@ -12,6 +12,7 @@ const TOKEN_EXPIRATION_TIME = process.env.TOKEN_EXPIRATION_TIME || "1h"; // Tiem
 
 export const loginController = async (req, res) => {
   const { username, password } = req.body;
+  //console.log(`Username: ${username}, Password: ${password}`);
 
   if (!username || !password) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -39,6 +40,8 @@ export const loginController = async (req, res) => {
       res.cookie("token", token, { httpOnly: true });
       res.status(200).json({ message: "Login successful", username, role });
     } else {
+
+      console.log(`Intento de inicio de sesión fallido para usuario: ${username}`);
       logger.warn(
         `Intento de inicio de sesión fallido para usuario: ${username}`
       );
