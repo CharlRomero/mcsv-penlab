@@ -18,28 +18,26 @@ export const loginController = async (req, res) => {
   }
 
   try {
-    const isValid = await verifyUserPassword(username, password);
+    const role = await verifyUserPassword(username, password);
 
-    if (isValid) {
-      // Crear el token
+    if (role) {
       const userId = await getUserIdByUsername(username);
-      const token = jwt.sign({ userId, username }, JWT_SECRET, {
-        expiresIn: TOKEN_EXPIRATION_TIME,
-      });
 
-      // Guardar el token en la base de datos
-      const expirationDate = new Date(Date.now() + 3600000); // Expira en 1 hora
+      const token = jwt.sign(
+        { userId, username, role }, // Incluye el rol en el token
+        JWT_SECRET,
+        { expiresIn: TOKEN_EXPIRATION_TIME }
+      );
+
+      const expirationDate = new Date(Date.now() + 3600000);
       await saveToken(userId, token, expirationDate);
 
-      // Registrar la actividad en el log
       logger.info(
         `Usuario ${username} inició sesión exitosamente. Token: ${token}`
       );
 
-      res.cookie("token", token, {
-        httpOnly: true, // Para que el token no sea accesible desde JS
-      });
-      res.status(200).json({ message: "Login successful", username });
+      res.cookie("token", token, { httpOnly: true });
+      res.status(200).json({ message: "Login successful", username, role });
     } else {
       logger.warn(
         `Intento de inicio de sesión fallido para usuario: ${username}`
