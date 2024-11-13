@@ -8,7 +8,7 @@ export const verifyUserPassword = async (username, passwordInput) => {
     throw new Error("User not found");
   }
 
-  const { password: storedPassword, salt } = user;
+  const { password: storedPassword, salt, rol_id } = user;
 
   // Convertir el Buffer del salt a string
   const saltString = salt.toString(); // Convertir el buffer en cadena
@@ -16,5 +16,8 @@ export const verifyUserPassword = async (username, passwordInput) => {
   // Hash la contraseña de entrada usando el salt convertido a string
   const hashedInputPassword = await hashPassword(passwordInput, saltString);
 
-  return hashedInputPassword === storedPassword; // Retorna si la contraseña es correcta o no
+  if (hashedInputPassword === storedPassword) {
+    return rol_id; // Devuelve el rol si la contraseña es correcta
+  }
+  return null;
 };
