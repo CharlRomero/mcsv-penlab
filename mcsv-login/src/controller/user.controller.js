@@ -12,14 +12,16 @@ const TOKEN_EXPIRATION_TIME = process.env.TOKEN_EXPIRATION_TIME || "1h"; // Tiem
 
 export const loginController = async (req, res) => {
   const { username, password } = req.body;
-  //console.log(`Username: ${username}, Password: ${password}`);
+  console.log(`Username: ${username}, Password: ${password}`);
 
   if (!username || !password) {
     return res.status(400).json({ message: "Missing required fields" });
+   
   }
 
   try {
     const role = await verifyUserPassword(username, password);
+     
 
     if (role) {
       const userId = await getUserIdByUsername(username);
@@ -30,6 +32,8 @@ export const loginController = async (req, res) => {
         { expiresIn: TOKEN_EXPIRATION_TIME }
       );
 
+      console.log(`Usuario ${username} inició sesión exitosamente. Token: ${token}`);
+
       const expirationDate = new Date(Date.now() + 3600000);
       await saveToken(userId, token, expirationDate);
 
@@ -37,8 +41,10 @@ export const loginController = async (req, res) => {
         `Usuario ${username} inició sesión exitosamente. Token: ${token}`
       );
 
-      res.cookie("token", token, { httpOnly: true });
-      res.status(200).json({ message: "Login successful", username, role });
+      //res.cookie("token", token, { httpOnly: true, sameSite: "lax", secure: false }); // Establece la cookie en el navegador
+      
+      //res.status(200).json({ message: "Login successful", username, role });
+      res.status(200).json({ message: "Login successful", token });
     } else {
 
       console.log(`Intento de inicio de sesión fallido para usuario: ${username}`);

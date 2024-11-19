@@ -12,6 +12,8 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); // Añadir el middleware aquí
 
+
+
 app.use("/mcsv", vpnRoutes);
 
 export default app;

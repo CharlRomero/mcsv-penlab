@@ -4,6 +4,7 @@ import { hashPassword } from "../utils/encrypt.utils.js"; // bcrypt hashing
 
 export const verifyUserPassword = async (username, passwordInput) => {
   const user = await getUserByUsername(username);
+  //console.log(user);
   if (!user) {
     throw new Error("User not found");
   }

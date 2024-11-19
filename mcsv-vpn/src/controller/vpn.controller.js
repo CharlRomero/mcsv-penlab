@@ -5,6 +5,7 @@ import { createVpnService } from '../service/vpn.service.js';
 export const createVpn = async (req, res) => {
   try {
     const { username, password } = req.body;
+    console.log('req.body', req.body);
     
     // Log para verificar la entrada
     console.log(`Username: ${username}, Password: ${password}, token: ${req.cookies.token}`);
@@ -24,9 +25,13 @@ export const createVpn = async (req, res) => {
 
 
 import { downloadVpnService } from '../service/vpn.service.js';
+console.log('downloadVpnService', downloadVpnService);
 
 export const downloadVpn = async (req, res) => {
   const { username } = req.params;
+
+  console.log('username', username);
+
 
   try {
     await downloadVpnService(username, res);
