@@ -13,3 +13,17 @@ export const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
+
+//conexion a la base de datos de la tabla de laboratorios
+
+// Nueva conexión para la base de datos vulnerable_machines_db
+export const poolVulnerableMachines = mysql.createPool({
+  host: process.env.DB_HOST,  // Usa la IP del host de la DB vulnerable_machines_db
+  port: process.env.DB_PORT,  // Puerto de la base de datos
+  user: process.env.DB_USER_MACHINE,  // Usuario de la base de datos
+  password: process.env.DB_PASSWORD_MACHINE,  // Contraseña de la base de datos
+  database: "vulnerable_machines_db",  // Nombre de la base de datos
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});

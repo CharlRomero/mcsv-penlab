@@ -1,6 +1,6 @@
 export class Certificate {
-  constructor(name, labName) {
-    this.name = name;
+  constructor(username, labName) {
+    this.name = username;
     this.labName = labName;
     this.dateIssued = new Date().toLocaleDateString();
   }
